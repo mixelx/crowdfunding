@@ -2,8 +2,6 @@ package com.course.startItProject.controller;
 
 import com.course.startItProject.entity.*;
 import com.course.startItProject.service.*;
-import com.course.startItProject.entity.*;
-import com.course.startItProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;

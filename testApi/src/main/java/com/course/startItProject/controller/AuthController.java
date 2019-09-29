@@ -51,7 +51,7 @@ public class AuthController {
         return "/login";
     }
 
-    @RequestMapping(value = "/confirm-account", method = RequestMethod.POST)
+    @RequestMapping(value = "/confirm-account", method = RequestMethod.GET)
     public String confirmUserAccount(@RequestParam("token") String confirmationToken) {
         ConfirmationToken token = confirmationTokenService.findByConfirmationToken(confirmationToken);
         return confirmationTokenService.confirmAccount(token, userService);
