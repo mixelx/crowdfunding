@@ -1,0 +1,2 @@
+INSERT IGNORE INTO `startitdatabase`.`user` (`id`, `active`, `email`, `password`, `url`, `username`) VALUES ('1', b'1', 'mkbusi85@gmail.com', '$2a$09$bFrztZgsthmfY94ynxVrA.zLPwKfW4kDMpTwRIEmqV0VVpU6Jufiy', 'https://res.cloudinary.com/dtr6qm7uy/image/upload/v1569223918/gncp1b70e0ovhgftosr8.jpg', 'admin');
+INSERT IGNORE INTO `startitdatabase`.`user_role` (`user`, `roles`) VALUES ('1', 'ADMIN');

@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css"/>
+    <link rel="stylesheet" type="text/css" href="css/drag.css">
+    <meta charset="UTF-8">
+    <title>Edit project</title>
+</head>
+<body>
+<nav id="nav">
+    <a class="startIt" href="/"><img src="/favicon.ico" width="45" height="45">StartIt</a>
+    <a class="link-2" href="/allCampaigns">All projects</a>
+    <a class="link-2" href="/addCampaign">Start up new project</a>
+    <a class="link-2" href="#">About us</a>
+    <a sec:authorize="hasAuthority('ADMIN')" class="link-2" href="/admin">User management</a>
+    <a sec:authorize="isAuthenticated()" href="/logout" style="float: right; margin-top: -30px" class="link-2">Log out</a>
+    <a sec:authorize="isAuthenticated()" href="/profile" style="float: right; margin-top: -30px" class="link-2"
+       th:text ="${#authentication.name}"></a>
+    <a sec:authorize="isAnonymous()" style="float: right; margin-top: -30px" class="link-2" href="/login">Login</a>
+</nav>
+
+
+<div class="container xex">
+    <form enctype="multipart/form-data" action="#" th:action="@{'/edit?id=' + ${project.id}}" th:object="${project}" method="post"
+          class="form-startit">
+        <div class="two">
+            <div class="form-group">
+                <h4>Project name:<input name="projectName" type="text" class="startLabel" maxlength="60" th:value="${project.projectName}" required></h4>
+                <h4>Select category:
+                    <select class="startLabel" name="categories" th:value="${project.categories}">
+                        <option th:each="state : ${T(com.angular.startItProject.entity.Categories).values()}"
+                                th:value="${state}"
+                                th:text="${state}">
+                        </option>
+                    </select>
+                </h4>
+                <h4>Short description:<input name="shortDisc" type="text" class="startLabel" maxlength="60" th:value="${project.shortDisc}"></h4>
+                <h4>Goal :<input name="goal" type="number" class="startLabel" maxlength="12" th:value="${project.goal}"></h4>
+                <h4>Video (YouTube link) :<input name="videoLink" type="text" class="startLabel" maxlength="254" th:value="${project.videoLink}"></h4>
+                <h5 class="startLabelDate">Choose duration time: <input name="durationDate" type="date" required th:value="${project.durationDate}"></h5>
+                <script class="jsbin" src="https://ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js"></script>
+
+            </div>
+        </div>
+        <div class="main">
+            <!-— call editor —>
+            <div id="editor_panel"></div>
+            <textarea name="fullDisc" id="editor_area"><span th:text="${project.fullDisc}"></span>
+</textarea>
+        </div>
+        <button class="btnAddCampaign" type="submit">Start It!</button>
+
+    </form>
+</div>
+</body>
+
+<script src="/js/markdown.js"></script>
+
+</html>

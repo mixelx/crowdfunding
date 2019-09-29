@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>Start It!Project</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+</head>
+<body style="margin-top: 4em;">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+                <li>
+                    <form class="form-inline">
+                        <div class="md-form">
+                            <input class="form-control mr-sm-5" type="text" placeholder="Search" aria-label="Search">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                <li>
+                    <div class="btn-group dropleft">
+                        <a class="btn" href="/profile" role="button">
+                            <img th:src="${profileImg}" width="35" height="35" style="border-radius: 50%">
+                            Profile</a>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item" href="/admin">User
+                                management</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-4">
+            <h1 style="color: #5175C0" th:text="${project.projectName.toUpperCase()}"></h1>
+            <form class="editbtn" id="edit" th:if="${project.author.username} eq ${#authentication.name}"
+                  th:action="@{'editform?id=' + ${project.id}}" method="post">
+                <input type="submit" value="edit" class="btn-info" style="width: 100px">
+            </form>
+            <form class="editbtn" sec:authorize="hasAuthority('ADMIN')"
+                  th:action="@{'editform?id=' + ${project.id}}"
+                  method="post">
+                <input type="submit" value="edit" style="width: 100px;" class="btn-info">
+            </form>
+            <form class="deletebtn" th:if="${project.author.username} eq ${#authentication.name}"
+                  th:action="@{'deleteproject?id=' + ${project.id}}" method="post">
+                <input type="submit" value="delete" class="btn-info" style="width: 100px">
+            </form>
+            <form class="deletebtn" id="delete" sec:authorize="hasAuthority('ADMIN')"
+                  th:action="@{'deleteProject?id=' + ${project.id}}" method="post">
+                <input type="submit" value="delete" class="btn-info" style="width: 100px">
+            </form>
+            <form th:action="@{'newspage?projectId=' + ${project.id}}" method="post">
+                <input type="submit" value="add news" class="btn-info">
+            </form>
+            <img th:src="${project.urls.get(0)}" style="width: 500px; height: 300px">
+            <div class="donate">
+            </div>
+            <iframe width="450" height="250"
+                    th:src="${project.videoLink}">
+            </iframe>
+            <th:block th:each="bonus: ${bonuses}">
+                <form th:action="@{'/buy?bonusId=' + ${bonus.id}}" class="rcorners container2" method="post"
+                      th:object="${history}">
+                    <h4 th:text="${bonus.cost} + '$'"></h4>
+                    <h4 th:text="${bonus.description}"></h4>
+                    <input type="submit" value="buy">
+                </form>
+            </th:block>
+            <form method="post" th:action="@{'/donate?id=' + ${project.id}}" th:object="${donate}">
+                <input type="number" id="summ" name="summa" required>
+                <input type="submit" value="donate">
+            </form>
+            <div th:if="${project.author.username} eq ${#authentication.name}" id="contactForm">
+                <h1>ADD BONUS</h1>
+                <small>Fill some fields below :)</small>
+                <form th:if="${project.author.username} eq ${#authentication.name}"
+                      th:action="@{'addbonus?id=' + ${project.id}}" th:object="${bonus}" method="post">
+                    <input placeholder="Cost $" type="number" name="cost" required>
+                    <textarea placeholder="Description" name="description" required></textarea>
+                    <input class="formBtn" type="submit">
+                </form>
+
+                <form sec:authorize="hasAuthority('ADMIN')" th:action="@{'addbonus?id=' + ${project.id}}"
+                      th:object="${bonus}" method="post">
+                    <input placeholder="Cost $" type="number" name="cost" required>
+                    <textarea placeholder="Description" name="description" required></textarea>
+                    <input class="formBtn" type="submit">
+                </form>
+            </div>
+        </div>
+        <div class="col-8">
+            <div class="">
+                <form th:if="${rating == null}" th:action="@{'rate?projectId=' + ${project.id}}" method="post"
+                      th:object="${rating}">
+    <span id="ratingcontainer" class="star-cb-group">
+      <input type="radio" id="rating-5" name="value" value="5"/><label for="rating-5">5</label>
+      <input type="radio" id="rating-4" name="value" value="4"/><label for="rating-4">4</label>
+      <input type="radio" id="rating-3" name="value" value="3"/><label for="rating-3">3</label>
+      <input type="radio" id="rating-2" name="value" value="2"/><label for="rating-2">2</label>
+      <input type="radio" id="rating-1" name="value" value="1"/><label for="rating-1">1</label>
+      <input type="radio" id="rating-0" name="value" value="0" class="star-cb-clear"/><label for="rating-0">0</label>
+    </span>
+                </form>
+                <div>
+                    <span th:utext="${project.fullDisc}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script src="/js/rating.js"></script>
+<script>
+    $(function () {
+
+        // contact form animations
+        $('#contact').click(function () {
+            $('#contactForm').fadeToggle();
+        })
+        $(document).mouseup(function (e) {
+            var container = $("#contactForm");
+
+            if (!container.is(e.target) // if the target of the click isn't the container...
+                && container.has(e.target).length === 0) // ... nor a descendant of the container
+            {
+                container.fadeOut();
+            }
+        });
+
+    });
+</script>
+</body>
+</html>

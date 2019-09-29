@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <title>My profile</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="css/drag.css">
+</head>
+<body style="margin-top: 4em;">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                <li>
+                    <div class="btn-group dropleft">
+                        <a class="btn" href="/profile" role="button">
+                            <img th:src="${profileImg}" width="35" height="35" style="border-radius: 50%">
+                            Profile</a>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item" href="/admin">User
+                                management</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-2">
+            <h2 style="text-align: center" th:text="${user.username}"></h2>
+            <center><img th:src="${user.url}" title="Profile_pic"
+                         style="border-radius: 50%; width: 250px; height: 250px"></center>
+        </div>
+    </div>
+    <br>
+    <div class="row justify-content-center align-items-center">
+        <div class="col-lg-2">
+            <form enctype="multipart/form-data" th:action="@{'/updatePic?userName=' + ${user.id}}" id="form1"
+                  method="post"
+                  class="updatePic_myprofile">
+                <h4>Change profile pic</h4>
+                <div class="input-group mb-3">
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" name="file" value="image" id="inputGroupFile01">
+                        <label class="custom-file-label" for="inputGroupFile01">Choose file</label>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br>
+    <h2>My projects:</h2>
+    <br>
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center">
+            <table class="table table-light">
+                <thead class="thead-dark">
+                <tr>
+                    <th scope="col">Project name</th>
+                    <th scope="col">Started</th>
+                    <th scope="col">Until</th>
+                    <th scope="col">Goal</th>
+                    <th scope="col">Reached</th>
+                </tr>
+                </thead>
+                <th:block th:each="project : ${myprojects}">
+                    <tr>
+                        <td><a th:href="@{'/project?id=' + ${project.id}}"
+                               th:text="${project.projectName}"></a></td>
+                        <td><span th:text="${project.creationDate}"></span></td>
+                        <td><span th:text="${project.durationDate}"></span></td>
+                        <td><span th:text="${project.goal}"></span></td>
+                        <td><span th:text="${project.reached}"></span></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center">
+            <h2>My bonuses:</h2>
+            <br>
+
+            <table class="table table-light">
+                <thead class="thead-dark">
+                <tr>
+                    <th>Project name</th>
+                    <th>Bonus description</th>
+                    <th>Cost, $</th>
+                </tr>
+                </thead>
+                <th:block th:each="history : ${histories}">
+                    <tr>
+                        <td class="projectName"><a th:href="@{'/project?id=' + ${history.bonus.project.id}}"
+                                                   th:text="${history.bonus.project.projectName}"></a></td>
+                        <td><span th:text="${history.bonus.description}"></span></td>
+                        <td><span th:text="${history.bonus.cost}"></span></td>
+                    </tr>
+                </th:block>
+            </table>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+<script>
+    $('[type*="file"]').change(function () {
+        $(this).closest("form").submit();
+    });
+</script>
+</body>
+</html>

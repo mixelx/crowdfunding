@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5" xmlns:https="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Start it!</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/rating.css">
+</head>
+<body style="margin-top: 4em;">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+                <li>
+                    <form class="form-inline">
+                        <div class="md-form">
+                            <input class="form-control mr-sm-5" type="text" placeholder="Search" aria-label="Search">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                <li>
+                    <div class="btn-group dropleft">
+                        <a class="btn" href="/profile" role="button">
+                            <img th:src="${profileImg}" width="35" height="35" style="border-radius: 50%">
+                            Profile</a>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item" href="/admin">User
+                                management</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<div class="container">
+    <h1 class="center">Top 3 projects</h1>
+    <div class="row">
+        <th:block th:each="project : ${listOfProject}">
+            <div class="col-sm-4" style="margin: auto">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-6">
+                                    <h5><a style="color: black" th:href="@{'/user?id=' + ${project.author.id}}"><img
+                                            th:src="${project.author.url}" width="40" height="40"
+                                            style="border-radius: 50%;">
+                                        <span
+                                                th:text="${project.author.username}"></span></a></h5>
+                                </div>
+                                <div class="col-6">
+                                    <div class="contexed">
+                                        <img src="https://png.pngtree.com/element_origin_min_pic/16/11/11/8ac53baf7a27b850a41fea736e19e9ec.jpg"
+                                             style=" height: 45px;width: 45px;">
+                                        <div class="centered"><h5 th:text="${project.rating}"></h5></div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <a th:href="@{'/project?id=' + ${project.id}}"> <img class="card-img-top" style="height: 300px"
+                                                                         th:src="${project.urls.get(0)}"
+                                                                         alt="Card image top"></a>
+                    <div class="card-body" style="height: 133px">
+                        <th:block th:each="category : ${project.categories}">
+                            <a th:href="@{'/filter?categoryName=' + ${category}}" th:text="${category}"></a>
+                            <h5 class="card-title"><a style="color: black;"
+                                                      th:href="@{'/project?id=' + ${project.id}}"
+                                                      th:text="${project.projectName.toUpperCase()}"></a></h5>
+                            <p class="card-text" th:text="${project.shortDisc}"></p>
+                        </th:block>
+                    </div>
+                    <div class="card-footer">
+                        <div th:with="reached=${project.reached / project.goal * 100}">
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width: 25%;"
+                                     th:attr="aria-valuenow=${project.reached}" th:style="'width:'+ ${reached}+'%;'"
+                                     aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                            <div class="container-fluid align-content-center">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <p>Expiration</p>
+                                        <time style="font-size: 14px;" th:text="${project.durationDate}"></time>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p>Goal</p>
+                                        <p th:text="${project.goal}+ '$'"></p>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <p>Reached</p>
+                                        <p th:text="${project.reached} + '$'"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </th:block>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
