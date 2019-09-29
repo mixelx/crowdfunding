@@ -1,6 +1,6 @@
 package com.course.startItProject.service;
 
-import com.angular.startItProject.entity.*;
+import com.course.startItProject.entity.*;
 import com.course.startItProject.entity.Project;
 import com.course.startItProject.entity.Rating;
 import com.course.startItProject.entity.User;

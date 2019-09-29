@@ -1,7 +1,7 @@
 package com.course.startItProject.controller;
 
-import com.angular.startItProject.entity.*;
-import com.angular.startItProject.service.*;
+import com.course.startItProject.entity.*;
+import com.course.startItProject.service.*;
 import com.course.startItProject.entity.*;
 import com.course.startItProject.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
