@@ -2,8 +2,8 @@ package com.course.startItProject.controller;
 
 import com.course.startItProject.entity.ConfirmationToken;
 import com.course.startItProject.entity.User;
-import com.course.startItProject.service.ConfirmationTokenService;
-import com.course.startItProject.service.UserService;
+import com.course.startItProject.service.impl.ConfirmationTokenServiceImpl;
+import com.course.startItProject.service.impl.UserServiceImpl;
 import com.course.startItProject.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +19,10 @@ public class AuthController {
     private UserValidator userValidator;
 
     @Autowired
-    private ConfirmationTokenService confirmationTokenService;
+    private ConfirmationTokenServiceImpl confirmationTokenServiceImpl;
 
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @GetMapping("/login")
     public String login(Model model, String error, String logout) {
@@ -47,13 +47,13 @@ public class AuthController {
         if (result.hasErrors()) {
             return "registration";
         }
-        userService.saveUser(user);
+        userServiceImpl.saveUser(user);
         return "/login";
     }
 
     @RequestMapping(value = "/confirm-account", method = RequestMethod.GET)
     public String confirmUserAccount(@RequestParam("token") String confirmationToken) {
-        ConfirmationToken token = confirmationTokenService.findByConfirmationToken(confirmationToken);
-        return confirmationTokenService.confirmAccount(token, userService);
+        ConfirmationToken token = confirmationTokenServiceImpl.findByConfirmationToken(confirmationToken);
+        return confirmationTokenServiceImpl.confirmAccount(token, userServiceImpl);
     }
 }

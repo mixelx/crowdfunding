@@ -2,10 +2,10 @@ package com.course.startItProject.controller;
 
 import com.course.startItProject.entity.User;
 import com.course.startItProject.roles.Role;
-import com.course.startItProject.service.ProjectService;
-import com.course.startItProject.service.RolesService;
-import com.course.startItProject.service.SessionService;
-import com.course.startItProject.service.UserService;
+import com.course.startItProject.service.impl.ProjectServiceImpl;
+import com.course.startItProject.service.impl.RolesServiceImpl;
+import com.course.startItProject.service.impl.SessionServiceImpl;
+import com.course.startItProject.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.session.SessionRegistry;
@@ -19,62 +19,62 @@ import org.springframework.web.bind.annotation.RequestParam;
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminController {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
-    ProjectService projectService;
+    ProjectServiceImpl projectServiceImpl;
 
     @Autowired
     SessionRegistry sessionRegistry;
 
     @Autowired
-    SessionService sessionService;
+    SessionServiceImpl sessionServiceImpl;
 
     @Autowired
-    RolesService rolesService;
+    RolesServiceImpl rolesServiceImpl;
 
     @RequestMapping("/admin")
     public String adminPage(ModelMap modelMap) {
-        modelMap.addAttribute("users", userService.findAll());
-        modelMap.addAttribute("profileImg", userService.getProfileUrlOfCurrentUser());
+        modelMap.addAttribute("users", userServiceImpl.findAll());
+        modelMap.addAttribute("profileImg", userServiceImpl.getProfileUrlOfCurrentUser());
         return "admin";
     }
 
     @PostMapping("/deleteUser")
     public String deleteUser(@RequestParam("id") long userId) {
-        projectService.deleteListOfProjects(projectService.findByAuthor(userService.findById(userId)));
-        sessionService.expireUsersSessionById(userId, userService, sessionRegistry);
-        userService.delete(userService.findById(userId));
+        projectServiceImpl.deleteListOfProjects(projectServiceImpl.findByAuthor(userServiceImpl.findById(userId)));
+        sessionServiceImpl.expireUsersSessionById(userId, userServiceImpl, sessionRegistry);
+        userServiceImpl.delete(userServiceImpl.findById(userId));
         return "redirect:/admin";
     }
 
     @PostMapping("/blockUser")
     public String blockUser(@RequestParam("id") long userId) {
-        sessionService.expireUsersSessionById(userId,userService, sessionRegistry);
-        User userToBlock = userService.findById(userId);
+        sessionServiceImpl.expireUsersSessionById(userId, userServiceImpl, sessionRegistry);
+        User userToBlock = userServiceImpl.findById(userId);
         userToBlock.setActive(false);
-        userService.save(userToBlock);
+        userServiceImpl.save(userToBlock);
         return "redirect:/admin";
     }
 
     @PostMapping("/unblockUser")
     public String unblockUser(@RequestParam("id") long userId) {
-        User userToUnblock = userService.findById(userId);
+        User userToUnblock = userServiceImpl.findById(userId);
         userToUnblock.setActive(true);
-        userService.save(userToUnblock);
+        userServiceImpl.save(userToUnblock);
         return "redirect:/admin";
     }
 
     @PostMapping("/changeRole")
     public String changeRole(@RequestParam("id") long userId) {
-        User user = userService.findById(userId);
+        User user = userServiceImpl.findById(userId);
         Object[] rolearray = user.getRoles().toArray();
         if (Role.ADMIN.equals(rolearray[0])) {
-            rolesService.changeRoleToUser(user);
+            rolesServiceImpl.changeRoleToUser(user);
         } else {
-            rolesService.changeRoleToAdmin(user);
+            rolesServiceImpl.changeRoleToAdmin(user);
         }
-        userService.save(user);
+        userServiceImpl.save(user);
         return "redirect:/admin";
     }
 }

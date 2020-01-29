@@ -1,9 +1,16 @@
 package com.course.startItProject.controller;
 
 import com.course.startItProject.entity.*;
-import com.course.startItProject.service.*;
-import com.course.startItProject.entity.*;
-import com.course.startItProject.service.*;
+import com.course.startItProject.service.impl.BonusServiceImpl;
+import com.course.startItProject.service.impl.CloudinaryServiceImpl;
+import com.course.startItProject.service.impl.DonateServiceImpl;
+import com.course.startItProject.service.impl.ImageServiceImpl;
+import com.course.startItProject.service.impl.NewsServiceImpl;
+import com.course.startItProject.service.impl.ProjectServiceImpl;
+import com.course.startItProject.service.impl.RatingServiceImpl;
+import com.course.startItProject.service.impl.SessionServiceImpl;
+import com.course.startItProject.service.impl.UserServiceImpl;
+import com.course.startItProject.service.impl.YouTubeServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,73 +21,73 @@ import org.springframework.web.multipart.MultipartFile;
 import java.security.Principal;
 import java.util.List;
 
+import static java.util.Arrays.stream;
+
 @Controller
 public class ProjectController {
     @Autowired
-    private UserService userService;
+    private UserServiceImpl userServiceImpl;
 
     @Autowired
-    private YouTubeService youTubeService;
+    private YouTubeServiceImpl youTubeService;
 
     @Autowired
-    private ProjectService projectService;
+    private ProjectServiceImpl projectServiceImpl;
 
     @Autowired
-    private CloudinaryService cloudinaryService;
+    private CloudinaryServiceImpl cloudinaryServiceImpl;
 
     @Autowired
-    private ImageService imageService;
+    private ImageServiceImpl imageServiceImpl;
 
     @Autowired
-    private BonusService bonusService;
+    private BonusServiceImpl bonusServiceImpl;
 
     @Autowired
-    private RatingService ratingService;
+    private RatingServiceImpl ratingServiceImpl;
 
     @Autowired
-    private SessionService sessionService;
+    private SessionServiceImpl sessionServiceImpl;
 
     @Autowired
-    private NewsService newsService;
+    private NewsServiceImpl newsServiceImpl;
 
     @Autowired
-    private DonateService donateService;
+    private DonateServiceImpl donateServiceImpl;
 
     @GetMapping("")
     public String getFirstPage(ModelMap modelMap) {
-        modelMap.addAttribute("listOfProject", projectService.findTop3ByRating());
-        modelMap.addAttribute("news", newsService.get5latestNews());
-        modelMap.addAttribute("donates", donateService.get5latestDonates());
-        modelMap.addAttribute("profileImg", userService.getProfileUrlOfCurrentUser());
+        modelMap.addAttribute("listOfProject", projectServiceImpl.findTop3ByRating());
+        modelMap.addAttribute("news", newsServiceImpl.get5latestNews());
+        modelMap.addAttribute("donates", donateServiceImpl.get5latestDonates());
+        modelMap.addAttribute("profileImg", userServiceImpl.getProfileUrlOfCurrentUser());
         return "startPage";
     }
 
     @PostMapping("/addCampaign")
     public String saveProject(@AuthenticationPrincipal User user, @ModelAttribute Project project, @RequestParam("file") MultipartFile[] file) {
-        for (MultipartFile multipartFile : file) {
-            imageService.saveImage(project, cloudinaryService.uploadFile(multipartFile));
-        }
+        stream(file).forEach(multipartFile -> imageServiceImpl.saveImage(project, cloudinaryServiceImpl.uploadFile(multipartFile)));
         project.setAuthor(user);
         String videoLink = project.getVideoLink();
         project.setVideoLink(youTubeService.adaptLink(videoLink));
-        projectService.save(project);
+        projectServiceImpl.save(project);
         return ("redirect:/");
     }
 
     @PostMapping("/deleteProject")
     public String deleteProject(@RequestParam("id") Long projectId) {
-        projectService.deleteProject(projectId);
+        projectServiceImpl.deleteProject(projectId);
         return "redirect:/";
     }
 
     @GetMapping("/project")
     public String getProjectPage(@RequestParam("id") long projectId, ModelMap model, Principal principal) {
-        Project project = projectService.findProjectById(projectId);
-        project.setUrls(imageService.getUrlsOfProject(project));
-        model.addAttribute("rating", ratingService.findByProjectAndUser(project, sessionService.getCurrentUser(userService)));
-        model.addAttribute("bonuses", bonusService.findByProject(project));
+        Project project = projectServiceImpl.findProjectById(projectId);
+        project.setImageUrls(imageServiceImpl.getUrlsOfProject(project));
+        model.addAttribute("rating", ratingServiceImpl.findByProjectAndUser(project, sessionServiceImpl.getCurrentUser(userServiceImpl)));
+        model.addAttribute("bonuses", bonusServiceImpl.findByProject(project));
         model.addAttribute("project", project);
-        model.addAttribute("profileImg", userService.getProfileUrlOfCurrentUser());
+        model.addAttribute("profileImg", userServiceImpl.getProfileUrlOfCurrentUser());
         return "project";
     }
 
@@ -92,66 +99,62 @@ public class ProjectController {
 
     @GetMapping("/allCampaigns")
     public String getAllCampaigns(ModelMap modelmap) {
-        List<Project> projects;
-        projects = projectService.getAll();
-        for (Project project : projects) {
-            project.setUrls(imageService.getUrlsOfProject(project));
-        }
-        modelmap.addAttribute("profileImg", userService.getProfileUrlOfCurrentUser());
+        List<Project> projects = projectServiceImpl.getAll();
+        modelmap.addAttribute("profileImg", userServiceImpl.getProfileUrlOfCurrentUser());
         modelmap.addAttribute("listOfProject", projects);
         return "allCampaigns";
     }
 
     @GetMapping("/filter")
     public String filterCampaigns(@RequestParam("categoryName") @ModelAttribute("category") Categories category, ModelMap model) {
-        List<Project> filteredProjects = projectService.findByCategories(category);
+        List<Project> filteredProjects = projectServiceImpl.findByCategories(category);
         for (Project project : filteredProjects) {
-            project.setUrls(imageService.getUrlsOfProject(project));
+            project.setImageUrls(imageServiceImpl.getUrlsOfProject(project));
         }
         model.addAttribute("listOfProject", filteredProjects);
-        model.addAttribute("profileImg", userService.getProfileUrlOfCurrentUser());
+        model.addAttribute("profileImg", userServiceImpl.getProfileUrlOfCurrentUser());
         return "allCampaigns";
     }
 
     @PostMapping("/editform")
     public String getEditForm(@RequestParam("id") long projectId, ModelMap modelMap) {
-        modelMap.addAttribute("project", projectService.findProjectById(projectId));
+        modelMap.addAttribute("project", projectServiceImpl.findProjectById(projectId));
         return "editform";
     }
 
     @PostMapping("/edit")
     public String editProject(@RequestParam("id") long projectId, @ModelAttribute("project") Project project) {
-        Project projectToEdit = projectService.findProjectById(projectId);
-        projectService.editProject(projectToEdit, project);
-        projectService.save(projectToEdit);
+        Project projectToEdit = projectServiceImpl.findProjectById(projectId);
+        projectServiceImpl.editProject(projectToEdit, project);
+        projectServiceImpl.save(projectToEdit);
         return "redirect:/project?id=" + projectId;
     }
 
     @PostMapping("addbonus")
     public String addBonus(@RequestParam("id") long projectId, @ModelAttribute("bonus") Bonus bonus) {
-        bonus.setProject(projectService.findProjectById(projectId));
-        bonusService.save(bonus);
+        bonus.setProject(projectServiceImpl.findProjectById(projectId));
+        bonusServiceImpl.save(bonus);
         return "redirect:/project?id=" + projectId;
     }
 
     @PostMapping("rate")
     public String rate(@RequestParam("projectId") long projectId, @ModelAttribute("rating") Rating rating) {
-        Project project = projectService.findProjectById(projectId);
-        ratingService.save(rating, project, userService);
-        project.setRating(ratingService.getAverageRating(project).intValue());
-        projectService.save(project);
+        Project project = projectServiceImpl.findProjectById(projectId);
+        ratingServiceImpl.save(rating, project, userServiceImpl);
+        project.setRating(ratingServiceImpl.getAverageRating(project).intValue());
+        projectServiceImpl.save(project);
         return "redirect:/project?id=" + projectId;
     }
 
     @PostMapping("addnews")
     public String addNews(@RequestParam("projectId") long projectId, @RequestParam("file") MultipartFile image, @ModelAttribute("news") News news) {
-        newsService.save(news, cloudinaryService.uploadFile(image), projectService.findProjectById(projectId));
+        newsServiceImpl.save(news, cloudinaryServiceImpl.uploadFile(image), projectServiceImpl.findProjectById(projectId));
         return "redirect:/project?id=" + projectId;
     }
 
     @PostMapping("newspage")
     public String newsPage(@RequestParam("projectId") long projectId, ModelMap modelMap) {
-        modelMap.addAttribute("project", projectService.findProjectById(projectId));
+        modelMap.addAttribute("project", projectServiceImpl.findProjectById(projectId));
         return "newspage";
     }
 }

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Registration</title>
+    <link rel="stylesheet" href="css/login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body class="nav-login">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+                <li>
+                    <form class="form-inline">
+                        <div class="md-form">
+                            <input class="form-control mr-sm-5" type="text" placeholder="Search" aria-label="Search">
+                        </div>
+                    </form>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+        </div>
+    </div>
+</nav>
+<form method="POST" action="#" modelAttribute="userForm" th:object="${user}" class="form-signin"
+      th:action="@{/registration}">
+    <div class="login">
+        <div class="login-screen">
+            <div class="app-title">
+                <h1>Sign up</h1>
+            </div>
+
+            <div class="login-form">
+                <div class="control-group">
+                    <input type="text" th:field="*{username}" name="username" path="username" class="form-control"
+                           placeholder="Username"/>
+                    <p class="has-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect password</p>
+                </div>
+
+                <div class="control-group">
+                    <input type="text" th:field="*{email}" name="email" path="email"
+                           class="form-control" placeholder="example@gmail.com"/>
+                    <p class="has-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}">Incorrect email template</p>
+                </div>
+
+                <div class="control-group">
+                    <input type="password" th:field="*{password}" name="password" path="password" class=" form-control"
+                           placeholder="Password"/>
+                    <p class="has-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect password</p>
+                </div>
+
+                <div class="control-group">
+                    <input type="password" th:field="*{confirmPassword}" name="confirmPassword" path="confirmPassword"
+                           class="form-control" placeholder="Confirm password"/>
+                    <p class="has-error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}">Incorrect confirm password</p>
+                </div>
+
+
+                <a class="login-link" href="/login">Already have an account?</a>
+
+                <button class="btnlog btn-large btn-block" type="submit">Sign up</button>
+            </div>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+

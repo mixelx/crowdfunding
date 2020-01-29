@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <title>Log in with your account</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+
+<body  style="margin-top: 4em;">
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                <li>
+                    <div class="btn-group dropleft">
+                        <a class="btn" href="/profile" role="button">
+                            <img th:src="${profileImg}" width="35" height="35" style="border-radius: 50%">
+                            Profile</a>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item" href="/admin">User
+                                management</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+<form th:action="@{/login}" method="POST" class="form-signin" th:object="${user}">
+<div class="login">
+    <div class="login-screen">
+        <div class="app-title">
+            <h1>Login</h1>
+        </div>
+
+        <div class="login-form">
+            <div class="control-group">
+                <input name="username" type="text" class="login-field" placeholder="Username" id="login-name" required/>
+                <label class="login-field-icon fui-user" for="login-name"></label>
+            </div>
+
+            <div class="control-group">
+                <input name="password" type="password" class="lofin-field" id="login-pass" placeholder="Password" required/>
+                <label class="login-field-icon fui-lock" for="login-pass"></label>
+            </div>
+            <span class="has-error" th:text="${error}"></span>
+            <a class="login-link" href="/registration">Create new account</a>
+
+            <button class="btnlog btn-primary btn-large btn-block" type="submit">login</button>
+
+        </div>
+    </div>
+</div>
+</form>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>

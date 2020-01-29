@@ -49,7 +49,7 @@ public class Project {
     private Set<Categories> categories;
 
     @Transient
-    private List<String> urls;
+    private List<String> imageUrls;
 
     public Project() {
 
@@ -150,11 +150,11 @@ public class Project {
         this.videoLink = videoLink;
     }
 
-    public List<String> getUrls() {
-        return urls;
+    public List<String> getImageUrls() {
+        return imageUrls;
     }
 
-    public void setUrls(List<String> urls) {
-        this.urls = urls;
+    public void setImageUrls(List<String> imageUrls) {
+        this.imageUrls = imageUrls;
     }
 }

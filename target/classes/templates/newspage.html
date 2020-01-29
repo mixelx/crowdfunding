@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" type="text/css" href="/css/common.css"/>
+    <link rel="stylesheet" type="text/css" href="/css/markdown.css"/>
+    <link rel="stylesheet" type="text/css" href="css/drag.css">
+</head>
+<body>
+    <form enctype="multipart/form-data" th:action="@{'addnews?projectId=' + ${project.id}}" th:object="${news}" th:if="${project.author.username} eq ${#authentication.name}" method="post">
+        <h2>Add news</h2>
+        <input type="text" placeholder="TITLE" name="title" required>
+        <input name="file" type="file" value="image" data-buttonText="text">
+        <div class="main">
+            <!-— call editor —>
+            <div id="editor_panel"></div>
+            <textarea name="content" id="editor_area">
+</textarea>
+        </div>
+        <input type="submit" value="OK">
+    </form>
+</body>
+<script src="js/dragndrop.js"></script>
+</html>

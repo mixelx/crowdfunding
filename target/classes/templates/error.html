@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<head xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="/css/error.css"/>
+    <title>Start It!</title>
+</head>
+<body>
+
+<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar"
+     style="background-color: rgb(118, 205, 216)">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="/favicon.ico" width="30" height="30">
+            Start it
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="/allCampaigns">All projects</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link" href="/addCampaign">Start new project</a>
+                </li>
+            </ul>
+            <a sec:authorize="isAnonymous()" class="btn btn-light" href="/login">Login</a>
+            <ul sec:authorize="isAuthenticated()" class="navbar-nav">
+                <li>
+                    <div class="btn-group dropleft">
+                        <a class="btn" href="/profile" role="button">
+                            Profile</a>
+                        <button type="button" class="btn dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <span class="sr-only">Toggle Dropdown</span>
+                        </button>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" href="/profile">Profile</a>
+                            <a sec:authorize="hasAuthority('ADMIN')" class="dropdown-item" href="/admin">User
+                                management</a>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item" href="/logout">Logout</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="windows">
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window">
+        <center>
+            <h2 style="font-family: Railway">We are sorry!</h2>
+            <h2>Something went wrong :( </h2>
+        </center>
+    </div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+    <div class="window"></div>
+</div>
+<div class="fan">
+    <div class="fan__root">
+				<span class="top">
+					<label class="red" for="engine"></label>
+					<label class="green" for="engine2"></label>
+					<label class="blue" for="jack"></label>
+				</span>
+        <span class="bottom"></span>
+    </div>
+    <div class="fan__staddle"></div>
+    <input type="checkbox" id="jack" hidden />
+    <div class="head">
+        <div class="fan__engine">
+            <span class="center"></span>
+        </div>
+        <input type="checkbox" id="engine" hidden checked />
+        <div>
+            <span class="fly"></span>
+            <span class="fly"></span>
+            <span class="fly"></span>
+            <div class="fan__blades">
+                <input type="checkbox" id="engine2" hidden checked />
+                <div class="fan__blades">
+                    <div class="center"></div>
+                    <div class="blade"><span></span></div>
+                    <div class="blade"><span></span></div>
+                    <div class="blade"><span></span></div>
+                    <div class="blade"><span></span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+        integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+        crossorigin="anonymous"></script>
+</body>
+</html>
